@@ -1,6 +1,15 @@
 # Windows Docker Machine
 [![Build status](https://ci.appveyor.com/api/projects/status/f1i6eotfeghj22u3?svg=true)](https://ci.appveyor.com/project/StefanScherer/windows-docker-machine)
 
+## NOTE:
+This is a fork from [StefanScherer](https://github.com/StefanScherer/windows-docker-machine).
+Based on my hand-in experience with the workflow described in the original `README`, I modified it as this one as a reminder as a reminder or even a quick(er)start to get the workflow really flows! (I was stuck in the packup stage, which was really frustrating!) 
+
+### Tested environments
+
+* macOS with Vagrant 2.1.5
+  * VirtualBox 5.2.18
+
 This Vagrant environment creates a Docker Machine to work on your MacBook with
 Windows containers. You can easily switch between Docker for Mac Linux
 containers and the Windows containers.
@@ -23,20 +32,12 @@ decide which Vagrant VM should be started.
 So with a `vagrant up 2016` you spin up the LTS version, with `vagrant up 1709`
 the 1709 version and with `vagrant up insider` the Insider build.
 
+### Use the cloud based one to quickly start without `packer build`-related stuffs.
 If you don't want to run the **packer** step, you can run `vagrant up 2016-box`
 and get your box downloaded directly from [Vagrant Cloud](https://app.vagrantup.com/StefanScherer/boxes/windows_2016_docker).
+The following steps are based on the `2016-box` box.
 
-Tested environments
 
-* macOS with Vagrant 2.0.3
-  * VMware Fusion Pro 10.1.0
-  * VirtualBox 5.2.8
-* Windows with Vagrant 2.0.3
-  * VMware Workstation Pro 14.1.0
-  * (VirtualBox see issue
-    [#2](https://github.com/StefanScherer/windows-docker-machine/issues/2))
-  * (Hyper-V see issue
-    [#1](https://github.com/StefanScherer/windows-docker-machine/issues/1))
 
 #### Before you begin
 
@@ -94,23 +95,15 @@ your `docker-machine` binary on your Mac.
 ```bash
 $ git clone https://github.com/StefanScherer/windows-docker-machine
 $ cd windows-docker-machine
-$ vagrant up --provider vmware_fusion 2016
-
-- or -
-
-$ vagrant up --provider virtualbox 2016
+$ vagrant up --provider virtualbox 2016-box
 ```
 
 ### List your new Docker machine
 
 ```bash
 $ docker-machine ls
-NAME      ACTIVE   DRIVER         STATE     URL                          SWARM   DOCKER    ERRORS
-dev       -        virtualbox     Running   tcp://192.168.99.100:2376            v1.13.0
-linux     -        vmwarefusion   Running                                        Unknown
-2016      *        generic        Running   tcp://192.168.254.135:2376           Unknown
-1709      -        generic        Running   tcp://192.168.254.136:2376           Unknown
-insider   -        generic        Running   tcp://192.168.254.137:2376           Unknown
+NAME       ACTIVE   DRIVER    STATE     URL                        SWARM   DOCKER          ERRORS
+2016-box   -        generic   Running   tcp://192.168.99.90:2376           v18.03.1-ee-3   
 ```
 
 Currently there is [an issue](https://github.com/docker/machine/issues/3943)
@@ -120,7 +113,7 @@ environments works as shown below.
 ### Switch to Windows containers
 
 ```bash
-$ eval $(docker-machine env 2016)
+$ eval $(docker-machine env 2016-box)
 ```
 
 Now your Mac Docker client talks to the Windows Docker engine:
@@ -128,21 +121,25 @@ Now your Mac Docker client talks to the Windows Docker engine:
 ```bash
 $ docker version
 Client:
- Version:      17.03.0-ce
- API version:  1.26
- Go version:   go1.7.5
- Git commit:   60ccb22
- Built:        Thu Feb 23 10:40:59 2017
- OS/Arch:      darwin/amd64
+ Version:	18.03.0-ce
+ API version:	1.37
+ Go version:	go1.9.4
+ Git commit:	0520e24
+ Built:	Wed Mar 21 23:06:22 2018
+ OS/Arch:	darwin/amd64
+ Experimental:	false
+ Orchestrator:	swarm
 
 Server:
- Version:      17.03.0-ee-1
- API version:  1.26 (minimum version 1.24)
- Go version:   go1.7.5
- Git commit:   9094a76
- Built:        Wed Mar  1 00:49:51 2017
- OS/Arch:      windows/amd64
- Experimental: true
+ Engine:
+  Version:	18.03.1-ee-3
+  API version:	1.37 (minimum version 1.15)
+  Go version:	go1.10.2
+  Git commit:	b9a5c95
+  Built:	Thu Aug 30 18:56:49 2018
+  OS/Arch:	windows/amd64
+  Experimental:	false
+
 ```
 
 ### Switch back to Docker for Mac
@@ -157,21 +154,25 @@ Mac installation.
 ```bash
 $ docker version
 Client:
- Version:      17.03.0-ce
- API version:  1.26
- Go version:   go1.7.5
- Git commit:   60ccb22
- Built:        Thu Feb 23 10:40:59 2017
- OS/Arch:      darwin/amd64
+ Version:	18.03.0-ce
+ API version:	1.37
+ Go version:	go1.9.4
+ Git commit:	0520e24
+ Built:	Wed Mar 21 23:06:22 2018
+ OS/Arch:	darwin/amd64
+ Experimental:	false
+ Orchestrator:	swarm
 
 Server:
- Version:      17.03.0-ce
- API version:  1.26 (minimum version 1.12)
- Go version:   go1.7.5
- Git commit:   3a232c8
- Built:        Tue Feb 28 07:52:04 2017
- OS/Arch:      linux/amd64
- Experimental: true
+ Engine:
+  Version:	18.03.0-ce
+  API version:	1.37 (minimum version 1.12)
+  Go version:	go1.9.4
+  Git commit:	0520e24
+  Built:	Wed Mar 21 23:14:32 2018
+  OS/Arch:	linux/amd64
+  Experimental:	true
+
 ```
 
 ### Mounting volumes from your Mac machine
